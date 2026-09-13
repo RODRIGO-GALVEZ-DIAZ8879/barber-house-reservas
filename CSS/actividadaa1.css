@@ -1377,11 +1377,74 @@ html[data-theme="light"] body::before {
     background: linear-gradient(180deg, rgba(255, 255, 255, 0.05), transparent 30%, rgba(255, 255, 255, 0.02));
 }
 
-/* La barra superior se adapta; el hero se mantiene oscuro para dar contraste drama al abrir la página. */
-
 html[data-theme="light"] .topbar {
     background: rgba(250, 247, 242, 0.92);
     box-shadow: 0 8px 24px rgba(38, 32, 27, 0.14);
+}
+
+html[data-theme="light"] .main-nav {
+    background: rgba(250, 247, 242, 0.98);
+    color: var(--text);
+}
+
+html[data-theme="light"] .main-nav a:hover,
+html[data-theme="light"] .main-nav a:focus-visible {
+    color: #624718;
+    background: rgba(185, 139, 62, 0.12);
+}
+
+html[data-theme="light"] .hero-overlay {
+    background: linear-gradient(90deg, rgba(248, 244, 238, 0.9), rgba(248, 244, 238, 0.55));
+}
+
+html[data-theme="light"] .hero-content::before {
+    background: radial-gradient(circle at 42% 40%, rgba(185, 139, 62, 0.12), transparent 55%);
+}
+
+html[data-theme="light"] .hero-text h1 {
+    background: linear-gradient(105deg, #3f3426 0%, #725322 35%, var(--gold-soft) 65%, #5c482b 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    filter: drop-shadow(0 8px 18px rgba(78, 59, 34, 0.18));
+}
+
+html[data-theme="light"] .hero-copy {
+    color: #514940;
+}
+
+html[data-theme="light"] .hero-card {
+    background: rgba(250, 247, 242, 0.86);
+    border-color: rgba(24, 24, 28, 0.12);
+    box-shadow: 0 24px 50px rgba(39, 33, 28, 0.2), 0 0 20px rgba(185, 139, 62, 0.1);
+}
+
+html[data-theme="light"] .hero-card li {
+    color: #5b554d;
+}
+
+html[data-theme="light"] .btn-primary {
+    background: linear-gradient(135deg, #c79b4c, #9a6d24);
+    color: #21170a;
+    box-shadow:
+        0 12px 24px rgba(125, 87, 29, 0.24),
+        inset 0 1px 0 rgba(255, 255, 255, 0.42);
+}
+
+html[data-theme="light"] .btn-primary:hover {
+    background: linear-gradient(135deg, #d5ad61, #b17f2e);
+    color: #1a1208;
+}
+
+html[data-theme="light"] .btn-secondary {
+    border-color: #8a6528;
+    background: rgba(255, 255, 255, 0.72);
+    color: #342a1d;
+}
+
+html[data-theme="light"] .btn-secondary:hover {
+    border-color: #6f501b;
+    background: rgba(185, 139, 62, 0.16);
+    color: #4c3512;
 }
 
 html[data-theme="light"] .benefit-card {
@@ -1404,17 +1467,58 @@ html[data-theme="light"] .barber-card:hover {
 }
 
 html[data-theme="light"] .card-meta strong {
-    color: #b98b3e;
+    color: #624718;
+}
+
+html[data-theme="light"] .form-message.success,
+html[data-theme="light"] .search-result.success {
+    color: #20663d;
+}
+
+html[data-theme="light"] .form-message.error,
+html[data-theme="light"] .search-result.error {
+    color: #9d2929;
+}
+
+html[data-theme="light"] .footer-inner {
+    color: #5b554d;
+}
+
+html[data-theme="light"] .footer-inner a {
+    color: #624718;
+}
+
+html[data-theme="light"] .back-to-top:hover {
+    background: rgba(185, 139, 62, 0.2);
+    color: #4c3512;
+}
+
+html[data-theme="light"] .status-select:hover {
+    border-color: #8a6528;
+    background: rgba(185, 139, 62, 0.12);
+}
+
+html[data-theme="light"] .status-select:focus {
+    border-color: #6f501b;
+}
+
+html[data-theme="light"] .card-meta {
+    color: #725322;
+}
+
+html[data-theme="light"] .card-meta strong {
+    color: #725322;
 }
 
 html[data-theme="light"] input,
 html[data-theme="light"] select {
     border-color: rgba(24, 24, 28, 0.16);
     background: rgba(255, 255, 255, 0.9);
+    color: #24211d;
 }
 
 html[data-theme="light"] input::placeholder {
-    color: rgba(113, 107, 100, 0.62);
+    color: #716b64;
 }
 
 html[data-theme="light"] label {
@@ -1422,8 +1526,9 @@ html[data-theme="light"] label {
 }
 
 html[data-theme="light"] .status-select {
-    border-color: rgba(24, 24, 28, 0.16);
+    border-color: rgba(24, 24, 28, 0.28);
     background-color: rgba(255, 255, 255, 0.9);
+    color: #24211d;
 }
 
 html[data-theme="light"] .menu-toggle,
@@ -1433,8 +1538,9 @@ html[data-theme="light"] .theme-toggle {
 }
 
 html[data-theme="light"] .search-result {
-    background: rgba(255, 255, 255, 0.6);
-    border-color: rgba(24, 24, 28, 0.12);
+    background: rgba(255, 255, 255, 0.82);
+    border-color: rgba(24, 24, 28, 0.2);
+    color: #24211d;
 }
 
 html[data-theme="light"] thead {
@@ -1451,6 +1557,10 @@ html[data-theme="light"] tbody tr:hover {
 
 html[data-theme="light"] td {
     color: var(--text);
+}
+
+html[data-theme="light"] th {
+    color: #624718;
 }
 
 html[data-theme="light"] .site-footer {

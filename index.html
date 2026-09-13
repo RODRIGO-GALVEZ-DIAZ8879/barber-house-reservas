@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Barber House | Sistema de reservas</title>
+    <meta name="description" content="Sistema de reservas para barbería con servicios, barberos y gestión de citas." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="CSS/actividadaa1.css" />
+    <meta name="theme-color" content="#0f0f10" />
+    <link rel="icon" href="data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2032%2032'%3E%3Crect%20width='32'%20height='32'%20rx='7'%20fill='%230f0f10'/%3E%3Ccircle%20cx='16'%20cy='16'%20r='10'%20fill='%23d7b56d'/%3E%3Ctext%20x='16'%20y='21'%20font-size='15'%20text-anchor='middle'%20fill='%23100d09'%20font-family='Georgia,serif'%3EB%3C/text%3E%3C/svg%3E" />
+</head>
+
+<body>
+    <header class="topbar">
+        <div class="container nav-wrap">
+            <div class="brand">
+                <span class="brand-mark">B</span>
+                <div>
+                    <p class="brand-name">Barber House</p>
+                    <span class="brand-subtitle">Estilo profesional</span>
+                </div>
+            </div>
+
+            <nav id="main-navigation" class="main-nav" aria-label="Navegación principal">
+                <a href="#inicio"><span class="nav-icon" aria-hidden="true">⌂</span>Inicio</a>
+                <a href="#servicios"><span class="nav-icon" aria-hidden="true">✦</span>Servicios</a>
+                <a href="#barberos"><span class="nav-icon" aria-hidden="true">♙</span>Barberos</a>
+                <a href="#reserva"><span class="nav-icon" aria-hidden="true">✂</span>Reserva</a>
+                <a href="#consulta"><span class="nav-icon" aria-hidden="true">⌕</span>Consulta</a>
+                <a href="#administracion"><span class="nav-icon" aria-hidden="true">▦</span>Admin</a>
+            </nav>
+
+            <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="main-navigation">
+                <span class="menu-icon" aria-hidden="true"><span></span><span></span><span></span></span>
+                <span class="menu-label">Menú</span>
+            </button>
+
+            <button class="theme-toggle" id="theme-toggle" type="button" aria-pressed="false"
+                aria-label="Cambiar a modo claro">☀</button>
+
+            <a class="btn btn-primary" href="#reserva">
+                <span class="btn-icon" aria-hidden="true">✂</span>
+                <span>Reservar ahora</span>
+            </a>
+        </div>
+    </header>
+
+    <main>
+        <section id="inicio" class="hero">
+            <div class="hero-overlay"></div>
+            <div class="container hero-content reveal">
+                <div class="hero-text">
+                    <p class="eyebrow">Proyecto 01 — Sistema de reservas</p>
+                    <h1>Tu estilo, tu horario, tu confianza.</h1>
+                    <p class="hero-copy">
+                        Reserva servicios premium, descubre a tus barberos y gestiona cada cita con
+                        una experiencia moderna y profesional.
+                    </p>
+                    <div class="hero-actions">
+                        <a href="#reserva" class="btn btn-primary"><span class="btn-icon" aria-hidden="true">✂</span><span>Hacer reserva</span></a>
+                        <a href="#administracion" class="btn btn-secondary"><span class="btn-icon" aria-hidden="true">▦</span><span>Panel administrativo</span></a>
+                    </div>
+
+                    <div class="hero-stats">
+                        <div>
+                            <strong>1.2k+</strong>
+                            <span>Clientes satisfechos</span>
+                        </div>
+                        <div>
+                            <strong>4.9/5</strong>
+                            <span>Excelente valoración</span>
+                        </div>
+                        <div>
+                            <strong>7 días</strong>
+                            <span>Atención semanal</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="hero-card reveal">
+                    <div class="card-badge">Agenda del día</div>
+                    <h3>Horarios destacados</h3>
+                    <ul>
+                        <li><span>Corte clásico</span><strong>09:00</strong></li>
+                        <li><span>Barba Pro</span><strong>11:30</strong></li>
+                        <li><span>Facial premium</span><strong>14:00</strong></li>
+                        <li><span>Diseño de barba</span><strong>16:45</strong></li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section class="section intro-strip">
+            <div class="container strip-grid reveal">
+                <div>
+                    <p class="small-label">Atención premium</p>
+                    <h2>Un espacio pensado para una experiencia masculina impecable.</h2>
+                </div>
+                <p>
+                    Simplificamos la gestión de reservas para que cada cliente tenga una experiencia
+                    fluida y para que el equipo administre horarios, estados y disponibilidad sin errores.
+                </p>
+            </div>
+        </section>
+
+        <section class="section benefits">
+            <div class="container">
+                <div class="section-header reveal">
+                    <p class="small-label">Por qué elegirnos</p>
+                    <h2>Experiencia premium en cada detalle</h2>
+                </div>
+
+                <div class="benefits-grid reveal">
+                    <article class="benefit-card">
+                        <div class="benefit-icon" aria-hidden="true">✦</div>
+                        <h3>Estilo impecable</h3>
+                        <p>Resultados modernos y cuidados con precisión para cada tipo de look.</p>
+                    </article>
+                    <article class="benefit-card">
+                        <div class="benefit-icon" aria-hidden="true">◷</div>
+                        <h3>Reserva rápida</h3>
+                        <p>Agenda tu cita en segundos y recibe confirmación inmediata de tu turno.</p>
+                    </article>
+                    <article class="benefit-card">
+                        <div class="benefit-icon" aria-hidden="true">★</div>
+                        <h3>Equipo experto</h3>
+                        <p>Barberos especializados que combinan técnica, cuidado y atención personalizada.</p>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <section id="servicios" class="section services">
+            <div class="container">
+                <div class="section-header reveal">
+                    <p class="small-label">Servicios</p>
+                    <h2>Soluciones a medida para cada estilo</h2>
+                </div>
+
+                <div id="services-list" class="services-grid"></div>
+            </div>
+        </section>
+
+        <section id="barberos" class="section barbers">
+            <div class="container">
+                <div class="section-header reveal">
+                    <p class="small-label">Equipo</p>
+                    <h2>Conoce a nuestros barberos</h2>
+                </div>
+
+                <div id="barbers-list" class="barbers-grid"></div>
+            </div>
+        </section>
+
+        <section id="reserva" class="section booking">
+            <div class="container booking-layout">
+                <div class="booking-copy reveal">
+                    <p class="small-label">Reserva</p>
+                    <h2>Agenda tu cita en pocos pasos</h2>
+                    <p>
+                        Elige tu servicio, selecciona al barbero ideal y confirma la fecha y hora según la
+                        disponibilidad.
+                    </p>
+                    <div class="feature-list">
+                        <div>
+                            <span>✔</span>
+                            <p>Validación de datos</p>
+                        </div>
+                        <div>
+                            <span>✔</span>
+                            <p>Horarios ocupados</p>
+                        </div>
+                        <div>
+                            <span>✔</span>
+                            <p>Código único de reserva</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="booking-card reveal">
+                    <form id="reservation-form">
+                        <div class="form-grid">
+                            <label>
+                                <span>Nombre completo</span>
+                                <input type="text" id="cliente" name="cliente" placeholder="Ej. José Ramírez"
+                                    autocomplete="name" minlength="3" maxlength="80"
+                                    required />
+                            </label>
+
+                            <label>
+                                <span>Teléfono</span>
+                                <input type="tel" id="telefono" name="telefono" placeholder="Ej. 999 123 456"
+                                    autocomplete="tel" inputmode="tel" maxlength="20"
+                                    required />
+                            </label>
+
+                            <label>
+                                <span>Servicio</span>
+                                <select id="servicio" name="servicio" required></select>
+                            </label>
+
+                            <label>
+                                <span>Barbero</span>
+                                <select id="barbero" name="barbero" required></select>
+                            </label>
+
+                            <label>
+                                <span>Fecha</span>
+                                <input type="date" id="fecha" name="fecha" required />
+                            </label>
+
+                            <label>
+                                <span>Hora</span>
+                                <input type="time" id="hora" name="hora" required min="09:00" max="19:00" step="1800" />
+                            </label>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary full">
+                            <span class="btn-icon" aria-hidden="true">✓</span>
+                            <span>Confirmar reserva</span>
+                        </button>
+                        <div id="reservation-message" class="form-message" aria-live="polite"></div>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+        <section id="consulta" class="section consultation">
+            <div class="container consultation-box reveal">
+                <div>
+                    <p class="small-label">Consulta</p>
+                    <h2>Busca tu reserva por código</h2>
+                </div>
+
+                <form id="search-form" class="search-form">
+                    <input type="text" id="search-code" placeholder="Ej. BR-9F3K2" maxlength="8"
+                        aria-label="Código de reserva" autocomplete="off" />
+                    <button type="submit" class="btn btn-primary">
+                        <span class="btn-icon" aria-hidden="true">⌕</span>
+                        <span>Consultar</span>
+                    </button>
+                </form>
+
+                <div id="search-result" class="search-result"></div>
+            </div>
+        </section>
+
+        <section id="administracion" class="section admin">
+            <div class="container">
+                <div class="section-header reveal">
+                    <p class="small-label">Panel administrativo</p>
+                    <h2>Gestión de reservas</h2>
+                </div>
+
+                <div class="admin-summary reveal">
+                    <div class="summary-card">
+                        <span>Total</span>
+                        <strong id="summary-total">0</strong>
+                    </div>
+                    <div class="summary-card warning">
+                        <span>Pendientes</span>
+                        <strong id="summary-pending">0</strong>
+                    </div>
+                    <div class="summary-card success">
+                        <span>Confirmadas</span>
+                        <strong id="summary-confirmed">0</strong>
+                    </div>
+                    <div class="summary-card info">
+                        <span>Completadas</span>
+                        <strong id="summary-completed">0</strong>
+                    </div>
+                </div>
+
+                <div class="table-toolbar reveal">
+                    <input type="search" id="admin-search" placeholder="Buscar por código o cliente"
+                        aria-label="Buscar reservas" />
+                    <button type="button" id="export-csv" class="btn btn-secondary">
+                        <span class="btn-icon" aria-hidden="true">⇓</span>
+                        <span>Exportar CSV</span>
+                    </button>
+                </div>
+
+                <div class="table-wrap reveal">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Código</th>
+                                <th>Cliente</th>
+                                <th>Servicio</th>
+                                <th>Barbero</th>
+                                <th>Fecha</th>
+                                <th>Hora</th>
+                                <th>Estado</th>
+                            </tr>
+                        </thead>
+                        <tbody id="reservations-table"></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container footer-inner">
+            <p>© 2026 Barber House • Sistema de reservas profesional</p>
+            <a href="#inicio">Volver arriba</a>
+        </div>
+    </footer>
+
+    <button id="back-to-top" class="back-to-top" type="button" aria-label="Volver arriba">↑</button>
+
+    <script src="barber.js"></script>
+</body>
+
+</html>

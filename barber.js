@@ -1,3 +1,5 @@
+document.documentElement.classList.add("js");
+
 const services = [
     {
         id: 1,
@@ -55,7 +57,7 @@ const barbers = [
     { id: 3, name: "Marco Silva", specialty: "Styling moderno", avatar: "MS" }
 ];
 
-let reservations = [
+const defaultReservations = [
     {
         id: 1,
         code: "BR-9F3K2",
@@ -97,6 +99,58 @@ let reservations = [
     }
 ];
 
+const STORAGE_KEY = "barber-house-reservations";
+const THEME_KEY = "barber-house-theme";
+const menuToggle = document.querySelector(".menu-toggle");
+const mainNav = document.querySelector(".main-nav");
+
+function getStoredValue(key) {
+    try {
+        return localStorage.getItem(key);
+    } catch (error) {
+        console.warn(`No se pudo leer ${key} desde localStorage.`, error);
+        return null;
+    }
+}
+
+function setStoredValue(key, value) {
+    try {
+        localStorage.setItem(key, value);
+    } catch (error) {
+        console.warn(`No se pudo guardar ${key} en localStorage.`, error);
+    }
+}
+
+function loadReservations() {
+    const savedReservations = getStoredValue(STORAGE_KEY);
+
+    if (!savedReservations) {
+        return [...defaultReservations];
+    }
+
+    try {
+        const parsed = JSON.parse(savedReservations);
+        return Array.isArray(parsed) && parsed.length ? parsed : [...defaultReservations];
+    } catch (error) {
+        return [...defaultReservations];
+    }
+}
+
+let reservations = loadReservations();
+
+function persistReservations() {
+    setStoredValue(STORAGE_KEY, JSON.stringify(reservations));
+}
+
+function escapeHtml(value) {
+    return String(value)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+}
+
 const reservationForm = document.getElementById("reservation-form");
 const reservationMessage = document.getElementById("reservation-message");
 const servicesList = document.getElementById("services-list");
@@ -133,12 +187,12 @@ function renderServices() {
         .map(
             (service) => `
         <article class="service-card reveal">
-          <div class="service-icon">${service.icon}</div>
-          <h3>${service.name}</h3>
-          <p>${service.description}</p>
+          <div class="service-icon" aria-hidden="true">${service.icon}</div>
+          <h3>${escapeHtml(service.name)}</h3>
+          <p>${escapeHtml(service.description)}</p>
           <div class="card-meta">
-            <span>${service.duration}</span>
-            <strong>$${service.price}</strong>
+            <span>${escapeHtml(service.duration)}</span>
+            <strong>$${service.price.toFixed(2)}</strong>
           </div>
         </article>
       `
@@ -151,9 +205,9 @@ function renderBarbers() {
         .map(
             (barber) => `
         <article class="barber-card reveal">
-          <div class="avatar">${barber.avatar}</div>
-          <h3>${barber.name}</h3>
-          <p>${barber.specialty}</p>
+          <div class="avatar" aria-hidden="true">${escapeHtml(barber.avatar)}</div>
+          <h3>${escapeHtml(barber.name)}</h3>
+          <p>${escapeHtml(barber.specialty)}</p>
           <div class="card-meta">
             <span>Especialista</span>
             <strong>Disponible</strong>
@@ -166,11 +220,11 @@ function renderBarbers() {
 
 function renderSelectOptions() {
     serviceSelect.innerHTML = services
-        .map((service) => `<option value="${service.id}">${service.name}</option>`)
+        .map((service) => `<option value="${service.id}">${escapeHtml(service.name)}</option>`)
         .join("");
 
     barberSelect.innerHTML = barbers
-        .map((barber) => `<option value="${barber.id}">${barber.name}</option>`)
+        .map((barber) => `<option value="${barber.id}">${escapeHtml(barber.name)}</option>`)
         .join("");
 }
 
@@ -190,7 +244,7 @@ function renderReservations(list = reservations) {
     if (!list.length) {
         reservationsTable.innerHTML = `
       <tr>
-        <td colspan="7" style="text-align:center; color: var(--muted);">No se encontraron reservas.</td>
+        <td colspan="7" class="empty-state">No se encontraron reservas.</td>
       </tr>
     `;
         return;
@@ -200,10 +254,10 @@ function renderReservations(list = reservations) {
         .map(
             (reservation) => `
         <tr>
-          <td>${reservation.code}</td>
-          <td>${reservation.cliente}</td>
-          <td>${reservation.servicio}</td>
-          <td>${reservation.barbero}</td>
+          <td>${escapeHtml(reservation.code)}</td>
+          <td>${escapeHtml(reservation.cliente)}</td>
+          <td>${escapeHtml(reservation.servicio)}</td>
+          <td>${escapeHtml(reservation.barbero)}</td>
           <td>${formatDate(reservation.fecha)}</td>
           <td>${reservation.hora}</td>
           <td>
@@ -236,6 +290,7 @@ function updateReservationStatus(id, status) {
         return reservation;
     });
 
+    persistReservations();
     updateSummary();
     renderReservations(filterReservations(adminSearchInput.value));
 }
@@ -263,6 +318,20 @@ function getStatusClassName(status) {
     return statusMap[status] || "pending";
 }
 
+function setButtonLoading(button, loading, label) {
+    if (!button) return;
+
+    button.classList.toggle("is-loading", loading);
+    button.setAttribute("aria-busy", String(loading));
+    button.disabled = loading;
+
+    const text = button.querySelector("span:last-child");
+
+    if (text && label) {
+        text.textContent = loading ? "Procesando..." : label;
+    }
+}
+
 function validateReservation(data) {
     const requiredFields = [
         data.cliente,
@@ -277,10 +346,18 @@ function validateReservation(data) {
         return "Completa todos los campos obligatorios.";
     }
 
+    if (data.cliente.length < 3 || data.cliente.length > 80) {
+        return "El nombre debe tener entre 3 y 80 caracteres.";
+    }
+
+    if (!/^[0-9()+ -]{7,20}$/.test(data.telefono)) {
+        return "Ingresa un número de teléfono válido.";
+    }
+
     const selectedDate = new Date(`${data.fecha}T${data.hora}:00`);
     const now = new Date();
 
-    if (selectedDate < now) {
+    if (Number.isNaN(selectedDate.getTime()) || selectedDate <= now) {
         return "La fecha y hora de la reserva no pueden ser anteriores a la actual.";
     }
 
@@ -301,6 +378,7 @@ function validateReservation(data) {
 
 function handleReservationSubmit(event) {
     event.preventDefault();
+    const submitButton = reservationForm.querySelector("button[type='submit']");
 
     const servicioId = Number(serviceSelect.value);
     const barberoId = Number(barberSelect.value);
@@ -323,6 +401,7 @@ function handleReservationSubmit(event) {
     if (error) {
         reservationMessage.textContent = error;
         reservationMessage.className = "form-message error";
+        markInvalidFields(error);
         return;
     }
 
@@ -341,16 +420,25 @@ function handleReservationSubmit(event) {
     };
 
     reservations.unshift(newReservation);
+    persistReservations();
     reservationForm.reset();
-    reservationMessage.textContent = `Reserva creada con éxito. Código: ${newReservation.code}`;
+    reservationMessage.innerHTML = `¡Reserva creada con éxito! Código: <span class="reservation-code">${escapeHtml(newReservation.code)}</span>`;
     reservationMessage.className = "form-message success";
+    playSuccessSound();
+    document.querySelectorAll("#reservation-form .invalid").forEach((field) => field.classList.remove("invalid"));
+    setButtonLoading(submitButton, true, "Confirmar reserva");
 
     updateSummary();
     renderReservations(filterReservations(adminSearchInput.value));
+
+    window.setTimeout(() => {
+        setButtonLoading(submitButton, false, "Confirmar reserva");
+    }, 650);
 }
 
 function handleSearchReservation(event) {
     event.preventDefault();
+    const searchButton = searchForm.querySelector("button[type='submit']");
 
     const code = searchCodeInput.value.trim().toUpperCase();
 
@@ -370,13 +458,18 @@ function handleSearchReservation(event) {
 
     searchResult.innerHTML = `
     <strong>Reserva encontrada:</strong><br>
-    Cliente: ${reservation.cliente}<br>
-    Servicio: ${reservation.servicio}<br>
-    Barbero: ${reservation.barbero}<br>
-    Fecha: ${formatDate(reservation.fecha)} • ${reservation.hora}<br>
-    Estado: <span class="badge ${getStatusClassName(reservation.estado)}">${reservation.estado}</span>
+    Cliente: ${escapeHtml(reservation.cliente)}<br>
+    Servicio: ${escapeHtml(reservation.servicio)}<br>
+    Barbero: ${escapeHtml(reservation.barbero)}<br>
+    Fecha: ${escapeHtml(formatDate(reservation.fecha))} • ${escapeHtml(reservation.hora)}<br>
+    Estado: <span class="badge ${getStatusClassName(reservation.estado)}">${escapeHtml(reservation.estado)}</span>
   `;
     searchResult.className = "search-result success";
+  setButtonLoading(searchButton, true, "Consultar");
+
+  window.setTimeout(() => {
+      setButtonLoading(searchButton, false, "Consultar");
+  }, 450);
 }
 
 function handleAdminSearch(event) {
@@ -387,9 +480,169 @@ function handleAdminSearch(event) {
 function initDateDefaults() {
     const today = new Date();
     today.setDate(today.getDate() + 1);
-    const formatted = today.toISOString().split("T")[0];
+    const formatted = [
+        today.getFullYear(),
+        String(today.getMonth() + 1).padStart(2, "0"),
+        String(today.getDate()).padStart(2, "0")
+    ].join("-");
     document.getElementById("fecha").min = formatted;
     document.getElementById("fecha").value = formatted;
+}
+
+function applyTheme(theme) {
+    const isLight = theme === "light";
+    document.documentElement.setAttribute("data-theme", theme);
+    setStoredValue(THEME_KEY, theme);
+
+    const themeToggle = document.getElementById("theme-toggle");
+
+    if (!themeToggle) return;
+
+    themeToggle.textContent = isLight ? "☾" : "☀";
+    themeToggle.setAttribute("aria-pressed", String(isLight));
+    themeToggle.setAttribute("aria-label", isLight ? "Cambiar a modo oscuro" : "Cambiar a modo claro");
+}
+
+function initTheme() {
+    const themeToggle = document.getElementById("theme-toggle");
+    const savedTheme = getStoredValue(THEME_KEY);
+    const theme = savedTheme === "light" ? "light" : "dark";
+
+    applyTheme(theme);
+
+    if (!themeToggle) return;
+
+    themeToggle.addEventListener("click", () => {
+        const nextTheme = document.documentElement.getAttribute("data-theme") === "light" ? "dark" : "light";
+        applyTheme(nextTheme);
+    });
+}
+
+function playSuccessSound() {
+    try {
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+
+        if (!AudioContext) return;
+
+        const context = new AudioContext();
+        const currentTime = context.currentTime;
+
+        const playNote = (frequency, start, duration, volume) => {
+            const oscillator = context.createOscillator();
+            const gain = context.createGain();
+
+            oscillator.type = "sine";
+            oscillator.frequency.value = frequency;
+            gain.gain.value = volume;
+
+            oscillator.connect(gain);
+            gain.connect(context.destination);
+
+            oscillator.start(currentTime + start);
+            oscillator.stop(currentTime + start + duration);
+        };
+
+        playNote(659.25, 0, 0.16, 0.14); // E5
+        playNote(830.61, 0.11, 0.3, 0.14); // G#5
+    } catch (error) {
+        /* Silencioso si el audio no está disponible */
+    }
+}
+
+function exportReservationsCSV() {
+    const header = ["Código", "Cliente", "Teléfono", "Servicio", "Barbero", "Fecha", "Hora", "Estado"];
+    const rows = reservations.map((reservation) => [
+        reservation.code,
+        reservation.cliente,
+        reservation.telefono,
+        reservation.servicio,
+        reservation.barbero,
+        reservation.fecha,
+        reservation.hora,
+        reservation.estado
+    ]);
+
+    const csv = [header, ...rows]
+        .map((row) => row.map((cell) => `"${String(cell).replace(/"/g, '""')}"`).join(";"))
+        .join("\n");
+
+    const blob = new Blob([`\uFEFF${csv}`], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+
+    link.href = url;
+    link.download = `reservas_barber-house_${new Date().toISOString().slice(0, 10)}.csv`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+}
+
+function setupReveal() {
+    const revealElements = document.querySelectorAll(".reveal");
+
+    if (!("IntersectionObserver" in window)) {
+        revealElements.forEach((element) => element.classList.add("is-visible"));
+        return;
+    }
+
+    const revealObserver = new IntersectionObserver(
+        (entries) => {
+            entries.forEach((entry) => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add("is-visible");
+                    revealObserver.unobserve(entry.target);
+                }
+            });
+        },
+        { threshold: 0.12, rootMargin: "0px 0px -40px 0px" }
+    );
+
+    revealElements.forEach((element) => revealObserver.observe(element));
+}
+
+function setupBackToTop() {
+    const backToTop = document.getElementById("back-to-top");
+
+    if (!backToTop) return;
+
+    window.addEventListener(
+        "scroll",
+        () => {
+            backToTop.classList.toggle("is-visible", window.scrollY > 520);
+        },
+        { passive: true }
+    );
+
+    backToTop.addEventListener("click", () => {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+    });
+}
+
+function setFieldState(id, hasError) {
+    const field = document.getElementById(id);
+
+    if (field) {
+        field.classList.toggle("invalid", hasError);
+    }
+}
+
+function markInvalidFields(message) {
+    const fieldIds = ["cliente", "telefono", "servicio", "barbero", "fecha", "hora"];
+
+    fieldIds.forEach((id) => {
+        const field = document.getElementById(id);
+
+        if (!field) return;
+
+        const isEmpty = !field.value || String(field.value).trim() === "";
+        setFieldState(id, isEmpty);
+    });
+
+    if (message.includes("ocupado")) {
+        setFieldState("fecha", true);
+        setFieldState("hora", true);
+    }
 }
 
 function init() {
@@ -400,9 +653,37 @@ function init() {
     updateSummary();
     renderReservations();
 
+    initTheme();
+    setupReveal();
+    setupBackToTop();
+
     reservationForm.addEventListener("submit", handleReservationSubmit);
     searchForm.addEventListener("submit", handleSearchReservation);
     adminSearchInput.addEventListener("input", handleAdminSearch);
+
+    const exportButton = document.getElementById("export-csv");
+
+    if (exportButton) {
+        exportButton.addEventListener("click", exportReservationsCSV);
+    }
+
+    document.querySelectorAll("#reservation-form input, #reservation-form select").forEach((field) => {
+        field.addEventListener("input", () => field.classList.remove("invalid"));
+    });
+
+    menuToggle.addEventListener("click", () => {
+        const isOpen = mainNav.classList.toggle("is-open");
+        menuToggle.setAttribute("aria-expanded", String(isOpen));
+        menuToggle.classList.toggle("is-open", isOpen);
+    });
+
+    mainNav.addEventListener("click", (event) => {
+        if (event.target.closest("a")) {
+            mainNav.classList.remove("is-open");
+            menuToggle.classList.remove("is-open");
+            menuToggle.setAttribute("aria-expanded", "false");
+        }
+    });
 }
 
 init();
