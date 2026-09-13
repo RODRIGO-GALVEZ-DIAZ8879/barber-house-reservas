@@ -104,14 +104,31 @@ const THEME_KEY = "barber-house-theme";
 const menuToggle = document.querySelector(".menu-toggle");
 const mainNav = document.querySelector(".main-nav");
 
-function loadReservations() {
+function getStoredValue(key) {
     try {
-        const savedReservations = localStorage.getItem(STORAGE_KEY);
+        return localStorage.getItem(key);
+    } catch (error) {
+        console.warn(`No se pudo leer ${key} desde localStorage.`, error);
+        return null;
+    }
+}
 
-        if (!savedReservations) {
-            return [...defaultReservations];
-        }
+function setStoredValue(key, value) {
+    try {
+        localStorage.setItem(key, value);
+    } catch (error) {
+        console.warn(`No se pudo guardar ${key} en localStorage.`, error);
+    }
+}
 
+function loadReservations() {
+    const savedReservations = getStoredValue(STORAGE_KEY);
+
+    if (!savedReservations) {
+        return [...defaultReservations];
+    }
+
+    try {
         const parsed = JSON.parse(savedReservations);
         return Array.isArray(parsed) && parsed.length ? parsed : [...defaultReservations];
     } catch (error) {
@@ -122,7 +139,7 @@ function loadReservations() {
 let reservations = loadReservations();
 
 function persistReservations() {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(reservations));
+    setStoredValue(STORAGE_KEY, JSON.stringify(reservations));
 }
 
 function escapeHtml(value) {
@@ -475,7 +492,7 @@ function initDateDefaults() {
 function applyTheme(theme) {
     const isLight = theme === "light";
     document.documentElement.setAttribute("data-theme", theme);
-    localStorage.setItem(THEME_KEY, theme);
+    setStoredValue(THEME_KEY, theme);
 
     const themeToggle = document.getElementById("theme-toggle");
 
@@ -488,7 +505,7 @@ function applyTheme(theme) {
 
 function initTheme() {
     const themeToggle = document.getElementById("theme-toggle");
-    const savedTheme = localStorage.getItem(THEME_KEY);
+    const savedTheme = getStoredValue(THEME_KEY);
     const theme = savedTheme === "light" ? "light" : "dark";
 
     applyTheme(theme);
