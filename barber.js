@@ -1,3 +1,5 @@
+document.documentElement.classList.add("js");
+
 const services = [
     {
         id: 1,
@@ -98,6 +100,9 @@ const defaultReservations = [
 ];
 
 const STORAGE_KEY = "barber-house-reservations";
+const THEME_KEY = "barber-house-theme";
+const menuToggle = document.querySelector(".menu-toggle");
+const mainNav = document.querySelector(".main-nav");
 
 function loadReservations() {
     try {
@@ -222,7 +227,7 @@ function renderReservations(list = reservations) {
     if (!list.length) {
         reservationsTable.innerHTML = `
       <tr>
-        <td colspan="7" style="text-align:center; color: var(--muted);">No se encontraron reservas.</td>
+        <td colspan="7" class="empty-state">No se encontraron reservas.</td>
       </tr>
     `;
         return;
@@ -296,6 +301,20 @@ function getStatusClassName(status) {
     return statusMap[status] || "pending";
 }
 
+function setButtonLoading(button, loading, label) {
+    if (!button) return;
+
+    button.classList.toggle("is-loading", loading);
+    button.setAttribute("aria-busy", String(loading));
+    button.disabled = loading;
+
+    const text = button.querySelector("span:last-child");
+
+    if (text && label) {
+        text.textContent = loading ? "Procesando..." : label;
+    }
+}
+
 function validateReservation(data) {
     const requiredFields = [
         data.cliente,
@@ -342,6 +361,7 @@ function validateReservation(data) {
 
 function handleReservationSubmit(event) {
     event.preventDefault();
+    const submitButton = reservationForm.querySelector("button[type='submit']");
 
     const servicioId = Number(serviceSelect.value);
     const barberoId = Number(barberSelect.value);
@@ -364,6 +384,7 @@ function handleReservationSubmit(event) {
     if (error) {
         reservationMessage.textContent = error;
         reservationMessage.className = "form-message error";
+        markInvalidFields(error);
         return;
     }
 
@@ -384,15 +405,23 @@ function handleReservationSubmit(event) {
     reservations.unshift(newReservation);
     persistReservations();
     reservationForm.reset();
-    reservationMessage.textContent = `Reserva creada con éxito. Código: ${newReservation.code}`;
+    reservationMessage.innerHTML = `¡Reserva creada con éxito! Código: <span class="reservation-code">${escapeHtml(newReservation.code)}</span>`;
     reservationMessage.className = "form-message success";
+    playSuccessSound();
+    document.querySelectorAll("#reservation-form .invalid").forEach((field) => field.classList.remove("invalid"));
+    setButtonLoading(submitButton, true, "Confirmar reserva");
 
     updateSummary();
     renderReservations(filterReservations(adminSearchInput.value));
+
+    window.setTimeout(() => {
+        setButtonLoading(submitButton, false, "Confirmar reserva");
+    }, 650);
 }
 
 function handleSearchReservation(event) {
     event.preventDefault();
+    const searchButton = searchForm.querySelector("button[type='submit']");
 
     const code = searchCodeInput.value.trim().toUpperCase();
 
@@ -419,6 +448,11 @@ function handleSearchReservation(event) {
     Estado: <span class="badge ${getStatusClassName(reservation.estado)}">${escapeHtml(reservation.estado)}</span>
   `;
     searchResult.className = "search-result success";
+  setButtonLoading(searchButton, true, "Consultar");
+
+  window.setTimeout(() => {
+      setButtonLoading(searchButton, false, "Consultar");
+  }, 450);
 }
 
 function handleAdminSearch(event) {
@@ -438,6 +472,162 @@ function initDateDefaults() {
     document.getElementById("fecha").value = formatted;
 }
 
+function applyTheme(theme) {
+    const isLight = theme === "light";
+    document.documentElement.setAttribute("data-theme", theme);
+    localStorage.setItem(THEME_KEY, theme);
+
+    const themeToggle = document.getElementById("theme-toggle");
+
+    if (!themeToggle) return;
+
+    themeToggle.textContent = isLight ? "☾" : "☀";
+    themeToggle.setAttribute("aria-pressed", String(isLight));
+    themeToggle.setAttribute("aria-label", isLight ? "Cambiar a modo oscuro" : "Cambiar a modo claro");
+}
+
+function initTheme() {
+    const themeToggle = document.getElementById("theme-toggle");
+    const savedTheme = localStorage.getItem(THEME_KEY);
+    const theme = savedTheme === "light" ? "light" : "dark";
+
+    applyTheme(theme);
+
+    if (!themeToggle) return;
+
+    themeToggle.addEventListener("click", () => {
+        const nextTheme = document.documentElement.getAttribute("data-theme") === "light" ? "dark" : "light";
+        applyTheme(nextTheme);
+    });
+}
+
+function playSuccessSound() {
+    try {
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+
+        if (!AudioContext) return;
+
+        const context = new AudioContext();
+        const currentTime = context.currentTime;
+
+        const playNote = (frequency, start, duration, volume) => {
+            const oscillator = context.createOscillator();
+            const gain = context.createGain();
+
+            oscillator.type = "sine";
+            oscillator.frequency.value = frequency;
+            gain.gain.value = volume;
+
+            oscillator.connect(gain);
+            gain.connect(context.destination);
+
+            oscillator.start(currentTime + start);
+            oscillator.stop(currentTime + start + duration);
+        };
+
+        playNote(659.25, 0, 0.16, 0.14); // E5
+        playNote(830.61, 0.11, 0.3, 0.14); // G#5
+    } catch (error) {
+        /* Silencioso si el audio no está disponible */
+    }
+}
+
+function exportReservationsCSV() {
+    const header = ["Código", "Cliente", "Teléfono", "Servicio", "Barbero", "Fecha", "Hora", "Estado"];
+    const rows = reservations.map((reservation) => [
+        reservation.code,
+        reservation.cliente,
+        reservation.telefono,
+        reservation.servicio,
+        reservation.barbero,
+        reservation.fecha,
+        reservation.hora,
+        reservation.estado
+    ]);
+
+    const csv = [header, ...rows]
+        .map((row) => row.map((cell) => `"${String(cell).replace(/"/g, '""')}"`).join(";"))
+        .join("\n");
+
+    const blob = new Blob([`\uFEFF${csv}`], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+
+    link.href = url;
+    link.download = `reservas_barber-house_${new Date().toISOString().slice(0, 10)}.csv`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+}
+
+function setupReveal() {
+    const revealElements = document.querySelectorAll(".reveal");
+
+    if (!("IntersectionObserver" in window)) {
+        revealElements.forEach((element) => element.classList.add("is-visible"));
+        return;
+    }
+
+    const revealObserver = new IntersectionObserver(
+        (entries) => {
+            entries.forEach((entry) => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add("is-visible");
+                    revealObserver.unobserve(entry.target);
+                }
+            });
+        },
+        { threshold: 0.12, rootMargin: "0px 0px -40px 0px" }
+    );
+
+    revealElements.forEach((element) => revealObserver.observe(element));
+}
+
+function setupBackToTop() {
+    const backToTop = document.getElementById("back-to-top");
+
+    if (!backToTop) return;
+
+    window.addEventListener(
+        "scroll",
+        () => {
+            backToTop.classList.toggle("is-visible", window.scrollY > 520);
+        },
+        { passive: true }
+    );
+
+    backToTop.addEventListener("click", () => {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+    });
+}
+
+function setFieldState(id, hasError) {
+    const field = document.getElementById(id);
+
+    if (field) {
+        field.classList.toggle("invalid", hasError);
+    }
+}
+
+function markInvalidFields(message) {
+    const fieldIds = ["cliente", "telefono", "servicio", "barbero", "fecha", "hora"];
+
+    fieldIds.forEach((id) => {
+        const field = document.getElementById(id);
+
+        if (!field) return;
+
+        const isEmpty = !field.value || String(field.value).trim() === "";
+        setFieldState(id, isEmpty);
+    });
+
+    if (message.includes("ocupado")) {
+        setFieldState("fecha", true);
+        setFieldState("hora", true);
+    }
+}
+
 function init() {
     renderServices();
     renderBarbers();
@@ -446,9 +636,37 @@ function init() {
     updateSummary();
     renderReservations();
 
+    initTheme();
+    setupReveal();
+    setupBackToTop();
+
     reservationForm.addEventListener("submit", handleReservationSubmit);
     searchForm.addEventListener("submit", handleSearchReservation);
     adminSearchInput.addEventListener("input", handleAdminSearch);
+
+    const exportButton = document.getElementById("export-csv");
+
+    if (exportButton) {
+        exportButton.addEventListener("click", exportReservationsCSV);
+    }
+
+    document.querySelectorAll("#reservation-form input, #reservation-form select").forEach((field) => {
+        field.addEventListener("input", () => field.classList.remove("invalid"));
+    });
+
+    menuToggle.addEventListener("click", () => {
+        const isOpen = mainNav.classList.toggle("is-open");
+        menuToggle.setAttribute("aria-expanded", String(isOpen));
+        menuToggle.classList.toggle("is-open", isOpen);
+    });
+
+    mainNav.addEventListener("click", (event) => {
+        if (event.target.closest("a")) {
+            mainNav.classList.remove("is-open");
+            menuToggle.classList.remove("is-open");
+            menuToggle.setAttribute("aria-expanded", "false");
+        }
+    });
 }
 
 init();

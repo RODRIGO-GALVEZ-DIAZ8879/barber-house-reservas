@@ -1,0 +1,16 @@
+# Sistema operativo
+Thumbs.db
+.DS_Store
+Desktop.ini
+
+# Editores
+.vscode/
+.idea/
+*.swp
+
+# Navegador / cache
+node_modules/
+
+# Archivos temporales
+*.log
+*.tmp
