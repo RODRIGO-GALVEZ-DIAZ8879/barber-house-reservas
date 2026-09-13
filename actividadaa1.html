@@ -12,6 +12,8 @@
         href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600;700;800&display=swap"
         rel="stylesheet" />
     <link rel="stylesheet" href="CSS/actividadaa1.css" />
+    <meta name="theme-color" content="#0f0f10" />
+    <link rel="icon" href="data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2032%2032'%3E%3Crect%20width='32'%20height='32'%20rx='7'%20fill='%230f0f10'/%3E%3Ccircle%20cx='16'%20cy='16'%20r='10'%20fill='%23d7b56d'/%3E%3Ctext%20x='16'%20y='21'%20font-size='15'%20text-anchor='middle'%20fill='%23100d09'%20font-family='Georgia,serif'%3EB%3C/text%3E%3C/svg%3E" />
 </head>
 
 <body>
@@ -25,16 +27,27 @@
                 </div>
             </div>
 
-            <nav class="main-nav" aria-label="Navegación principal">
-                <a href="#inicio">Inicio</a>
-                <a href="#servicios">Servicios</a>
-                <a href="#barberos">Barberos</a>
-                <a href="#reserva">Reserva</a>
-                <a href="#consulta">Consulta</a>
-                <a href="#administracion">Admin</a>
+            <nav id="main-navigation" class="main-nav" aria-label="Navegación principal">
+                <a href="#inicio"><span class="nav-icon" aria-hidden="true">⌂</span>Inicio</a>
+                <a href="#servicios"><span class="nav-icon" aria-hidden="true">✦</span>Servicios</a>
+                <a href="#barberos"><span class="nav-icon" aria-hidden="true">♙</span>Barberos</a>
+                <a href="#reserva"><span class="nav-icon" aria-hidden="true">✂</span>Reserva</a>
+                <a href="#consulta"><span class="nav-icon" aria-hidden="true">⌕</span>Consulta</a>
+                <a href="#administracion"><span class="nav-icon" aria-hidden="true">▦</span>Admin</a>
             </nav>
 
-            <a class="btn btn-primary" href="#reserva">Reservar ahora</a>
+            <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="main-navigation">
+                <span class="menu-icon" aria-hidden="true"><span></span><span></span><span></span></span>
+                <span class="menu-label">Menú</span>
+            </button>
+
+            <button class="theme-toggle" id="theme-toggle" type="button" aria-pressed="false"
+                aria-label="Cambiar a modo claro">☀</button>
+
+            <a class="btn btn-primary" href="#reserva">
+                <span class="btn-icon" aria-hidden="true">✂</span>
+                <span>Reservar ahora</span>
+            </a>
         </div>
     </header>
 
@@ -50,8 +63,8 @@
                         una experiencia moderna y profesional.
                     </p>
                     <div class="hero-actions">
-                        <a href="#reserva" class="btn btn-primary">Hacer reserva</a>
-                        <a href="#administracion" class="btn btn-secondary">Panel administrativo</a>
+                        <a href="#reserva" class="btn btn-primary"><span class="btn-icon" aria-hidden="true">✂</span><span>Hacer reserva</span></a>
+                        <a href="#administracion" class="btn btn-secondary"><span class="btn-icon" aria-hidden="true">▦</span><span>Panel administrativo</span></a>
                     </div>
 
                     <div class="hero-stats">
@@ -105,17 +118,17 @@
 
                 <div class="benefits-grid reveal">
                     <article class="benefit-card">
-                        <div class="benefit-icon">✦</div>
+                        <div class="benefit-icon" aria-hidden="true">✦</div>
                         <h3>Estilo impecable</h3>
                         <p>Resultados modernos y cuidados con precisión para cada tipo de look.</p>
                     </article>
                     <article class="benefit-card">
-                        <div class="benefit-icon">⏱</div>
+                        <div class="benefit-icon" aria-hidden="true">◷</div>
                         <h3>Reserva rápida</h3>
                         <p>Agenda tu cita en segundos y recibe confirmación inmediata de tu turno.</p>
                     </article>
                     <article class="benefit-card">
-                        <div class="benefit-icon">★</div>
+                        <div class="benefit-icon" aria-hidden="true">★</div>
                         <h3>Equipo experto</h3>
                         <p>Barberos especializados que combinan técnica, cuidado y atención personalizada.</p>
                     </article>
@@ -208,7 +221,10 @@
                             </label>
                         </div>
 
-                        <button type="submit" class="btn btn-primary full">Confirmar reserva</button>
+                        <button type="submit" class="btn btn-primary full">
+                            <span class="btn-icon" aria-hidden="true">✓</span>
+                            <span>Confirmar reserva</span>
+                        </button>
                         <div id="reservation-message" class="form-message" aria-live="polite"></div>
                     </form>
                 </div>
@@ -225,7 +241,10 @@
                 <form id="search-form" class="search-form">
                     <input type="text" id="search-code" placeholder="Ej. BR-9F3K2" maxlength="8"
                         aria-label="Código de reserva" autocomplete="off" />
-                    <button type="submit" class="btn btn-primary">Consultar</button>
+                    <button type="submit" class="btn btn-primary">
+                        <span class="btn-icon" aria-hidden="true">⌕</span>
+                        <span>Consultar</span>
+                    </button>
                 </form>
 
                 <div id="search-result" class="search-result"></div>
@@ -261,6 +280,10 @@
                 <div class="table-toolbar reveal">
                     <input type="search" id="admin-search" placeholder="Buscar por código o cliente"
                         aria-label="Buscar reservas" />
+                    <button type="button" id="export-csv" class="btn btn-secondary">
+                        <span class="btn-icon" aria-hidden="true">⇓</span>
+                        <span>Exportar CSV</span>
+                    </button>
                 </div>
 
                 <div class="table-wrap reveal">
@@ -289,6 +312,8 @@
             <a href="#inicio">Volver arriba</a>
         </div>
     </footer>
+
+    <button id="back-to-top" class="back-to-top" type="button" aria-label="Volver arriba">↑</button>
 
     <script src="barber.js"></script>
 </body>
