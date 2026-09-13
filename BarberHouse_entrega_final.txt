@@ -1,0 +1,53 @@
+BARBER HOUSE
+Sistema web de reservas para barbería
+Documento final de entrega
+
+1. Descripción
+Barber House es una aplicación web para gestionar citas de una barbería. Permite al cliente consultar los servicios, conocer al equipo, reservar una cita y consultar el estado de su reserva. También incluye un panel administrativo para filtrar las citas y actualizar su estado.
+
+2. Archivos del proyecto
+- actividadaa1.html: estructura y contenido de la aplicación.
+- CSS/actividadaa1.css: estilos, diseño responsive y apariencia visual.
+- barber.js: servicios, barberos, reservas, validaciones, búsqueda, estados y almacenamiento local.
+
+3. Funciones comprobadas
+- Navegación hacia Inicio, Servicios, Barberos, Reserva, Consulta y Administración.
+- Botón «Reservar ahora».
+- Botón «Hacer reserva».
+- Botón «Panel administrativo».
+- Botón «Confirmar reserva».
+- Botón «Consultar».
+- Creación de un código único para cada reserva.
+- Búsqueda de una reserva por código.
+- Filtro administrativo por código o cliente.
+- Cambio del estado de una reserva.
+- Conservación de las reservas mediante localStorage.
+
+4. Validaciones
+- Campos obligatorios.
+- Nombre entre 3 y 80 caracteres.
+- Teléfono con formato válido.
+- Fecha y hora posteriores al momento actual.
+- Prevención de horarios duplicados para un mismo barbero.
+
+5. Diseño visual
+La interfaz utiliza una estética oscura y elegante, con detalles dorados, tarjetas con profundidad, botones destacados, efectos hover, secciones responsive y una estructura clara para ordenador y móvil.
+
+6. Tecnologías
+- HTML5
+- CSS3
+- JavaScript
+- LocalStorage del navegador
+
+7. Resultado de la revisión
+Los botones principales y el flujo de reserva fueron probados en navegador. La navegación, la consulta y la creación de reservas respondieron correctamente. No se detectaron errores funcionales graves.
+
+8. Posibles ampliaciones
+- Editar y eliminar reservas.
+- Ordenar la agenda por fecha o estado.
+- Exportar las citas a CSV o PDF.
+- Usar una base de datos real.
+- Añadir acceso privado para administradores.
+
+9. Conclusión
+El proyecto está listo para presentarse como trabajo académico o demostración funcional. La estructura es clara, la experiencia de uso es sencilla y el código permite añadir nuevas funciones en el futuro.

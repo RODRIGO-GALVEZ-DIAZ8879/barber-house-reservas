@@ -1,0 +1,62 @@
+Barber House – Sistema de reservas para barbería
+
+1. Introducción
+Barber House es un proyecto web desarrollado para gestionar reservas en una barbería de forma rápida, ordenada y visualmente atractiva. Su objetivo es permitir a los clientes reservar servicios, consultar su cita por código y que el administrador administre el estado de cada reserva desde un panel sencillo e intuitivo.
+
+2. Objetivo del proyecto
+Crear una interfaz funcional que permita:
+- mostrar los servicios ofrecidos,
+- presentar al equipo de barberos,
+- registrar reservas de los clientes,
+- buscar citas mediante un código único,
+- supervisar el estado de cada reserva,
+- mantener la información disponible aunque se recargue la página.
+
+3. Funcionalidades principales
+- Catálogo de servicios con nombre, duración, precio e icono.
+- Presentación del equipo de barberos con especialización.
+- Formulario de reserva validado.
+- Generación automática de código único de reserva.
+- Búsqueda de reservas por código.
+- Panel administrativo con estadísticas y filtros.
+- Cambio de estado de la reserva (Pendiente, Confirmada, Completada, Cancelada).
+- Persistencia con localStorage para conservar la información en el navegador.
+
+4. Tecnologías utilizadas
+- HTML5
+- CSS3
+- JavaScript
+- LocalStorage
+
+5. Flujo de uso
+El usuario accede a la página principal y puede navegar por Inicio, Servicios, Barberos, Reserva, Consulta y Administración. Desde ahí, selecciona un servicio, un barbero, completa los datos y confirma la reserva. El sistema genera un código y la cita queda registrada para que el cliente pueda consultarla más adelante.
+
+6. Validaciones implementadas
+- Validación de nombre y teléfono.
+- Comprobación de campos obligatorios.
+- Impedimento de fechas pasadas.
+- Verificación de horario ocupado para el mismo barbero.
+- Control de disponibilidad.
+
+7. Resultados obtenidos
+Se consiguió un sistema funcional y visualmente atractivo con:
+- diseño moderno,
+- estructura clara,
+- gestión de reservas real,
+- panel administrativo útil,
+- mejor experiencia para usuario y administrador.
+
+8. Conclusión
+Barber House es una solución práctica y moderna para gestionar reservas en una barbería. La combinación de diseño, usabilidad y lógica hace que el proyecto sea fácil de usar y ampliable en el futuro.
+
+9. Mejoras futuras
+- editar reservas fácilmente,
+- eliminar reservas,
+- ordenar por fecha o estado,
+- exportación a PDF o CSV,
+- integración con base de datos real,
+- sistema de autenticación para administración,
+- calendario mensual o semanal.
+
+10. Cierre
+El proyecto cumple con su objetivo de ofrecer una experiencia elegante, funcional y accesible para clientes y administradores. Su estructura permite ampliarse y mejorarse en futuras versiones sin perder la base actual.
